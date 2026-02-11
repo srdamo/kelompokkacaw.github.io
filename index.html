@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Searching & Sorting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+    }
+    button {
+      cursor: pointer;
+    }
+    .output {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Searching & Sorting Algorithm</h1>
+
+<div class="box">
+  <h3>Input Array</h3>
+  <input type="text" id="arrayInput" placeholder="contoh: 5,3,8,1,2">
+</div>
+
+<div class="box">
+  <h3>Linear Search</h3>
+  <input type="number" id="linearKey" placeholder="angka dicari">
+  <button onclick="linearSearch()">Cari</button>
+  <div class="output" id="linearResult"></div>
+</div>
+
+<div class="box">
+  <h3>Binary Search (Array harus terurut)</h3>
+  <input type="number" id="binaryKey" placeholder="angka dicari">
+  <button onclick="binarySearch()">Cari</button>
+  <div class="output" id="binaryResult"></div>
+</div>
+
+<div class="box">
+  <h3>Bubble Sort</h3>
+  <button onclick="bubbleSort()">Urutkan</button>
+  <div class="output" id="bubbleResult"></div>
+</div>
+
+<div class="box">
+  <h3>Merge Sort</h3>
+  <button onclick="mergeSortBtn()">Urutkan</button>
+  <div class="output" id="mergeResult"></div>
+</div>
+
+<div class="box">
+  <h3>Quick Sort</h3>
+  <button onclick="quickSortBtn()">Urutkan</button>
+  <div class="output" id="quickResult"></div>
+</div>
+
+<script>
+  function getArray() {
+    return document.getElementById("arrayInput").value
+      .split(",")
+      .map(Number);
+  }
+
+  // Linear Search
+  function linearSearch() {
+    let arr = getArray();
+    let key = Number(document.getElementById("linearKey").value);
+    let index = -1;
+
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === key) {
+        index = i;
+        break;
+      }
+    }
+
+    document.getElementById("linearResult").innerText =
+      index !== -1 ? "Ditemukan di indeks " + index : "Tidak ditemukan";
+  }
+
+  // Binary Search
+  function binarySearch() {
+    let arr = getArray().sort((a,b)=>a-b);
+    let key = Number(document.getElementById("binaryKey").value);
+    let low = 0, high = arr.length - 1;
+    let found = -1;
+
+    while (low <= high) {
+      let mid = Math.floor((low + high) / 2);
+      if (arr[mid] === key) {
+        found = mid;
+        break;
+      } else if (arr[mid] < key) {
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+
+    document.getElementById("binaryResult").innerText =
+      found !== -1 ? "Ditemukan di indeks " + found : "Tidak ditemukan";
+  }
+
+  // Bubble Sort
+  function bubbleSort() {
+    let arr = getArray();
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+          let temp = arr[j];
+          arr[j] = arr[j + 1];
+          arr[j + 1] = temp;
+        }
+      }
+    }
+    document.getElementById("bubbleResult").innerText = arr.join(", ");
+  }
+
+  // Merge Sort
+  function mergeSort(arr) {
+    if (arr.length <= 1) return arr;
+    let mid = Math.floor(arr.length / 2);
+    let left = mergeSort(arr.slice(0, mid));
+    let right = mergeSort(arr.slice(mid));
+
+    let result = [];
+    while (left.length && right.length) {
+      result.push(left[0] < right[0] ? left.shift() : right.shift());
+    }
+    return result.concat(left, right);
+  }
+
+  function mergeSortBtn() {
+    let arr = getArray();
+    let sorted = mergeSort(arr);
+    document.getElementById("mergeResult").innerText = sorted.join(", ");
+  }
+
+  // Quick Sort
+  function quickSort(arr) {
+    if (arr.length <= 1) return arr;
+    let pivot = arr[arr.length - 1];
+    let left = [];
+    let right = [];
+
+    for (let i = 0; i < arr.length - 1; i++) {
+      arr[i] < pivot ? left.push(arr[i]) : right.push(arr[i]);
+    }
+
+    return [...quickSort(left), pivot, ...quickSort(right)];
+  }
+
+  function quickSortBtn() {
+    let arr = getArray();
+    let sorted = quickSort(arr);
+    document.getElementById("quickResult").innerText = sorted.join(", ");
+  }
+</script>
+
+</body>
+</html>
